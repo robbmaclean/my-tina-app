@@ -16,13 +16,21 @@
     {
       "title": "About",
       "link": "/about"
+    },
+    {
+      "title": "Robb",
+      "link": "/robb"
+    },
+    {
+      "title": "Publications",
+      "link": "/publications"
     }
   ],
   "contactLinks": [
     {
       "title": "X",
       "link": "https://x.com/tinacms",
-      "icon": "TbBrandX"
+      "icon": "TbAlertTriangleOff"
     },
     {
       "title": "Docs",

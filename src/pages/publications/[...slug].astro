@@ -1,0 +1,59 @@
+---
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const publications = await getCollection("publication");
+
+  return publications.map((publication) => ({
+    params: { slug: publication.id },
+    props: { publication },
+  }));
+}
+
+const { publication } = Astro.props;
+const { Content } = await render(publication);
+---
+
+<a href="/publications">← Back to Publications</a>
+
+<h1>{publication.data.title}</h1>
+
+<p>{publication.data.authors.join(", ")}</p>
+
+<p>
+  {publication.data.venue}
+  {" • "}
+  {publication.data.pubDate.getFullYear()}
+</p>
+
+{publication.data.publicationType && (
+  <p>Type: {publication.data.publicationType}</p>
+)}
+
+{publication.data.doi && <p>DOI: {publication.data.doi}</p>}
+
+{(publication.data.pdfUrl || publication.data.externalUrl) && (
+  <p>
+    {publication.data.pdfUrl && (
+      <a href={publication.data.pdfUrl} target="_blank" rel="noreferrer">
+        PDF
+      </a>
+    )}
+    {publication.data.pdfUrl && publication.data.externalUrl && " • "}
+    {publication.data.externalUrl && (
+      <a href={publication.data.externalUrl} target="_blank" rel="noreferrer">
+        External Link
+      </a>
+    )}
+  </p>
+)}
+
+{publication.data.abstract && (
+  <>
+    <h2>Abstract</h2>
+    <p>{publication.data.abstract}</p>
+  </>
+)}
+
+<h2>Details</h2>
+<Content />

@@ -1,0 +1,123 @@
+import type { Collection } from "tinacms";
+
+export const PublicationCollection: Collection = {
+  name: "publication",
+  label: "Publications",
+  path: "src/content/publication",
+  format: "mdx",
+  ui: {
+    router({ document }) {
+      return `/publications/${document._sys.filename}`;
+    },
+    filename: {
+      slugify: (values) => {
+        return (values?.title || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")   // replace spaces & symbols with "-"
+          .replace(/(^-|-$)/g, "");      // trim leading/trailing "-"
+      },
+    },
+  },
+  fields: [
+    {
+      type: "string",
+      name: "title",
+      label: "Title",
+      isTitle: true,
+      required: true,
+    },
+    {
+      type: "string",
+      name: "authors",
+      label: "Authors",
+      list: true,
+      required: true,
+    },
+    {
+      type: "datetime",
+      name: "pubDate",
+      label: "Publication Date",
+      required: true,
+    },
+    {
+      type: "string",
+      name: "venue",
+      label: "Journal / Conference / Publisher",
+    },
+    {
+      type: "string",
+      name: "publicationType",
+      label: "Publication Type",
+      options: [
+        {
+          label: "Journal Article",
+          value: "journal-article",
+        },
+        {
+          label: "Conference Paper",
+          value: "conference-paper",
+        },
+        {
+          label: "Book Chapter",
+          value: "book-chapter",
+        },
+        {
+          label: "Book",
+          value: "book",
+        },
+        {
+          label: "Preprint",
+          value: "preprint",
+        },
+        {
+          label: "Report",
+          value: "report",
+        },
+        {
+          label: "Other",
+          value: "other",
+        },
+      ],
+    },
+    {
+      type: "string",
+      name: "abstract",
+      label: "Abstract",
+      ui: {
+        component: "textarea",
+      },
+    },
+    {
+      type: "string",
+      name: "pdfUrl",
+      label: "PDF URL",
+    },
+    {
+      type: "string",
+      name: "externalUrl",
+      label: "External URL",
+    },
+    {
+      type: "string",
+      name: "doi",
+      label: "DOI",
+    },
+    {
+      type: "string",
+      name: "tags",
+      label: "Tags",
+      list: true,
+    },
+    {
+      type: "boolean",
+      name: "featured",
+      label: "Featured",
+    },
+    {
+      type: "rich-text",
+      name: "body",
+      label: "Body",
+      isBody: true,
+    },
+  ],
+};

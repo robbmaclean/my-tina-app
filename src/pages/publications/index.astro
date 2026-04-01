@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content";
+
+const publications = (await getCollection("publication")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+---
+
+<h1>Publications</h1>
+
+<ul>
+  {publications.map((publication) => (
+    <li>
+      <h2>
+        <a href={`/publications/${publication.id}`}>
+          {publication.data.title}
+        </a>
+      </h2>
+
+      <div>{publication.data.authors.join(", ")}</div>
+
+      <div>
+        {publication.data.venue}
+        {" • "}
+        {publication.data.pubDate.getFullYear()}
+      </div>
+
+      {publication.data.abstract && <p>{publication.data.abstract}</p>}
+    </li>
+  ))}
+</ul>
