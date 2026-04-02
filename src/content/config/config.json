@@ -14,23 +14,19 @@
       "link": "/blog"
     },
     {
-      "title": "About",
-      "link": "/about"
-    },
-    {
-      "title": "Robb",
-      "link": "/robb"
-    },
-    {
       "title": "Publications",
       "link": "/publications"
+    },
+    {
+      "title": "About",
+      "link": "/about"
     }
   ],
   "contactLinks": [
     {
       "title": "X",
       "link": "https://x.com/tinacms",
-      "icon": "TbAlertTriangleOff"
+      "icon": "TbBrandX"
     },
     {
       "title": "Docs",
