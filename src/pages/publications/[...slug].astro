@@ -1,59 +1,177 @@
 ---
-import { getCollection, render } from "astro:content";
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import config from '../../content/config/config.json';
+import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const publications = await getCollection("publication");
+	const publications = await getCollection('publication');
 
-  return publications.map((publication) => ({
-    params: { slug: publication.id },
-    props: { publication },
-  }));
+	return publications.map((publication) => ({
+		params: { slug: publication.id },
+		props: { publication },
+	}));
 }
 
 const { publication } = Astro.props;
 const { Content } = await render(publication);
+
+const pageTitle = `${publication.data.title} | ${config.seo.title}`;
+const pageDescription =
+	publication.data.abstract ||
+	`Publication by ${publication.data.authors.join(', ')}`;
 ---
 
-<a href="/publications">← Back to Publications</a>
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={pageTitle} description={pageDescription} />
+		<style>
+			main {
+				width: 960px;
+			}
 
-<h1>{publication.data.title}</h1>
+			article {
+				padding: 1rem 0 2rem;
+			}
 
-<p>{publication.data.authors.join(", ")}</p>
+			.back-link {
+				display: inline-block;
+				margin-bottom: 1.5rem;
+				color: rgb(var(--accent));
+				text-decoration: none;
+			}
 
-<p>
-  {publication.data.venue}
-  {" • "}
-  {publication.data.pubDate.getFullYear()}
-</p>
+			.back-link:hover {
+				text-decoration: underline;
+			}
 
-{publication.data.publicationType && (
-  <p>Type: {publication.data.publicationType}</p>
-)}
+			h1 {
+				margin-bottom: 0.75rem;
+				line-height: 1.15;
+			}
 
-{publication.data.doi && <p>DOI: {publication.data.doi}</p>}
+			.meta,
+			.date,
+			.type,
+			.doi {
+				margin: 0 0 0.5rem;
+				color: rgb(var(--gray));
+			}
 
-{(publication.data.pdfUrl || publication.data.externalUrl) && (
-  <p>
-    {publication.data.pdfUrl && (
-      <a href={publication.data.pdfUrl} target="_blank" rel="noreferrer">
-        PDF
-      </a>
-    )}
-    {publication.data.pdfUrl && publication.data.externalUrl && " • "}
-    {publication.data.externalUrl && (
-      <a href={publication.data.externalUrl} target="_blank" rel="noreferrer">
-        External Link
-      </a>
-    )}
-  </p>
-)}
+			.links {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 1rem;
+				margin: 1.5rem 0;
+			}
 
-{publication.data.abstract && (
-  <>
-    <h2>Abstract</h2>
-    <p>{publication.data.abstract}</p>
-  </>
-)}
+			.links a {
+				color: rgb(var(--accent));
+				text-decoration: underline;
+				text-underline-offset: 0.2em;
+			}
 
-<h2>Details</h2>
-<Content />
+			.abstract-section,
+			.body-section {
+				margin-top: 2rem;
+			}
+
+			.abstract-section h2,
+			.body-section h2 {
+				margin-bottom: 0.75rem;
+			}
+
+			.abstract {
+				color: rgb(var(--gray-dark));
+			}
+
+			.body {
+				line-height: 1.75;
+			}
+
+			.body :global(h2),
+			.body :global(h3),
+			.body :global(h4) {
+				margin-top: 2rem;
+			}
+
+			.body :global(p),
+			.body :global(ul),
+			.body :global(ol) {
+				margin-bottom: 1rem;
+			}
+
+			.body :global(a) {
+				color: rgb(var(--accent));
+			}
+
+			@media (max-width: 720px) {
+				main {
+					width: auto;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<article>
+				<a class="back-link" href="/publications/">← Back to Publications</a>
+
+				<h1>{publication.data.title}</h1>
+
+				<p class="meta">{publication.data.authors.join(', ')}</p>
+
+				{publication.data.venue && (
+					<p class="meta">{publication.data.venue}</p>
+				)}
+
+				<p class="date">
+					<FormattedDate date={publication.data.pubDate} />
+				</p>
+
+				{publication.data.publicationType && (
+					<p class="type">Type: {publication.data.publicationType}</p>
+				)}
+
+				{publication.data.doi && <p class="doi">DOI: {publication.data.doi}</p>}
+
+				{(publication.data.pdfUrl || publication.data.externalUrl) && (
+					<div class="links">
+						{publication.data.pdfUrl && (
+							<a href={publication.data.pdfUrl} target="_blank" rel="noreferrer">
+								View PDF
+							</a>
+						)}
+						{publication.data.externalUrl && (
+							<a
+								href={publication.data.externalUrl}
+								target="_blank"
+								rel="noreferrer"
+							>
+								External Link
+							</a>
+						)}
+					</div>
+				)}
+
+				{publication.data.abstract && (
+					<section class="abstract-section">
+						<h2>Abstract</h2>
+						<p class="abstract">{publication.data.abstract}</p>
+					</section>
+				)}
+
+				<section class="body-section">
+					<div class="body">
+						<Content />
+					</div>
+				</section>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
