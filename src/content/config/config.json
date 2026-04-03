@@ -20,6 +20,10 @@
     {
       "title": "About",
       "link": "/about"
+    },
+    {
+      "title": "The New Thing",
+      "link": "/new-thing"
     }
   ],
   "contactLinks": [
